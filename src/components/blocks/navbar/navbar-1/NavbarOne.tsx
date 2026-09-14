@@ -12,7 +12,6 @@ import Link from "next/link";
 import HeaderRight from "../components/header-right";
 import FancyHeader from "../components/fancy-header";
 import crselogo from "../../../../assets/img/crselogo.png";
-import Toplogo from "../top-logo/Toplogo";
 
 // ===================================================================
 interface NavbarProps {
@@ -118,7 +117,6 @@ export default function NavbarOne({
 
   return (
     <Fragment>
-      <Toplogo />
       {stickyBox ? <div style={{ paddingTop: sticky ? navbarRef.current?.clientHeight : 0 }} /> : null}
 
       <nav ref={navbarRef} className={sticky ? fixedClassName : navClassName}>

@@ -1,6 +1,5 @@
 export const DEFAULT_HERO_TITLE = '„Restart Pracy – Start Rozwoju!”';
-export const DEFAULT_HERO_IMAGE =
-  'https://github.com/user-attachments/assets/3cea04b8-34bd-4e1b-b103-02fa562f0d7c';
+export const DEFAULT_HERO_IMAGE = '/img/hero/hero-strona-glowna.jpg';
 export const DEFAULT_ABOUT_CONTENT = `Celem głównym projektu jest zwiększenie możliwości zawodowych 100 osób powyżej 18 roku życia zamieszkujących w rozumieniu Kodeksu Cywilnego na obszarze województwa świętokrzyskiego, wpisujących się w definicję osób ubogich pracujących poprzez zaplanowane działania realizowane w ramach aktywizacji zawodowej oraz zwiększenie świadomości i kompetencji 15 pracodawców/związków zawodowych posiadających jednostkę organizacyjną na obszarze województwa świętokrzyskiego na temat sposobów zapobiegania dyskryminacji i tworzenia przyjaznego środowiska pracy, co przyczyni się m.in. do poprawy pozycji Uczestników/czek projektu na rynku pracy.
 
 Efektami udziału w projekcie będzie:
