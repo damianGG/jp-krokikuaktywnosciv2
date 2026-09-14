@@ -12,7 +12,7 @@ export default function Toplogo() {
         style={{
           width: '100%',
           height: 'auto',
-          maxWidth: '1000px',
+          maxWidth: '1286px',
         }} />
 
     </div>
