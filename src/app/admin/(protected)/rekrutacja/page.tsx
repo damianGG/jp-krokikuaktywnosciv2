@@ -2,10 +2,10 @@ import {
   getRekrutacjaContent,
   getRekrutacjaPliki,
   updateRekrutacjaContent,
-  addRekrutacjaFile,
   deleteRekrutacjaFile,
 } from '@/lib/actions/rekrutacja';
 import SubmitButton from '@/components/admin/SubmitButton';
+import RekrutacjaUploadForm from '@/components/admin/RekrutacjaUploadForm';
 import styles from '@/components/admin/admin.module.scss';
 
 export const metadata = {
@@ -239,25 +239,7 @@ export default async function AdminRekrutacjaPage() {
           </div>
         )}
 
-        <form action={addRekrutacjaFile} className={styles.formGrid} style={{ marginTop: '1.25rem' }}>
-          <div className={styles.formRow}>
-            <div className={styles.field}>
-              <label htmlFor="description">Nazwa widoczna dla odwiedzających</label>
-              <input id="description" name="description" type="text" placeholder="np. Regulamin rekrutacji" />
-            </div>
-            <div className={styles.field}>
-              <label htmlFor="colorFile">Plik kolorowy</label>
-              <input id="colorFile" name="colorFile" type="file" required />
-            </div>
-            <div className={styles.field}>
-              <label htmlFor="blackWhiteFile">Plik czarno-biały</label>
-              <input id="blackWhiteFile" name="blackWhiteFile" type="file" />
-            </div>
-          </div>
-          <div>
-            <SubmitButton pendingText="Wgrywanie...">Dodaj plik</SubmitButton>
-          </div>
-        </form>
+        <RekrutacjaUploadForm />
       </div>
     </>
   );

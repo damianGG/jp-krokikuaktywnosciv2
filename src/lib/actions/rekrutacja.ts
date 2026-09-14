@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { eq, asc, sql } from 'drizzle-orm';
-import { put, del } from '@vercel/blob';
+import { del } from '@vercel/blob';
 import { db } from '@/lib/db';
 import { rekrutacjaContent, rekrutacjaPliki } from '@/lib/db/schema';
 import { getUserId } from '@/lib/get-user-id';
@@ -110,34 +110,23 @@ export async function updateRekrutacjaContent(formData: FormData) {
   revalidatePath('/admin/rekrutacja');
 }
 
-export async function addRekrutacjaFile(formData: FormData) {
+// Files are uploaded straight from the browser to Vercel Blob (see
+// /api/rekrutacja/upload). This action only persists the resulting blob
+// metadata, so it never carries the file bytes through the serverless
+// request body and is not affected by the 4.5 MB platform limit.
+export async function saveRekrutacjaFile(input: {
+  description: string;
+  name: string;
+  url: string;
+  pathname: string;
+  blackWhiteUrl?: string | null;
+  blackWhitePathname?: string | null;
+}) {
   const userId = await getUserId();
   await ensureRekrutacjaFileVariants();
 
-  const file = formData.get('colorFile') as File | null;
-  const blackWhiteFile = formData.get('blackWhiteFile') as File | null;
-  const description = String(formData.get('description') ?? '').trim();
-
-  if (!file || file.size === 0) {
-    throw new Error('Wybierz plik do wgrania.');
-  }
-
-  const blob = await put(`rekrutacja/kolor/${file.name}`, file, {
-    access: 'public',
-    addRandomSuffix: true,
-  });
-  let blackWhiteBlob: Awaited<ReturnType<typeof put>> | null = null;
-
-  try {
-    if (blackWhiteFile && blackWhiteFile.size > 0) {
-      blackWhiteBlob = await put(`rekrutacja/czarno-biale/${blackWhiteFile.name}`, blackWhiteFile, {
-        access: 'public',
-        addRandomSuffix: true,
-      });
-    }
-  } catch (error) {
-    await del(blob.url).catch(() => {});
-    throw error;
+  if (!input.url || !input.pathname) {
+    throw new Error('Brak wgranego pliku do zapisania.');
   }
 
   const files = await getRekrutacjaPliki();
@@ -145,12 +134,12 @@ export async function addRekrutacjaFile(formData: FormData) {
 
   await db.insert(rekrutacjaPliki).values({
     userId,
-    name: file.name,
-    description: description || null,
-    url: blob.url,
-    pathname: blob.pathname,
-    blackWhiteUrl: blackWhiteBlob?.url ?? null,
-    blackWhitePathname: blackWhiteBlob?.pathname ?? null,
+    name: input.name,
+    description: input.description || null,
+    url: input.url,
+    pathname: input.pathname,
+    blackWhiteUrl: input.blackWhiteUrl ?? null,
+    blackWhitePathname: input.blackWhitePathname ?? null,
     position: nextPosition,
   });
 
