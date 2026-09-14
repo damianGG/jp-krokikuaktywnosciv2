@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
+import Image from "next/image";
 // Bootstrap and custom scss
 import "@/assets/scss/style.scss";
 import NavbarOne from "@/components/blocks/navbar/navbar-1/NavbarOne";
@@ -37,6 +38,26 @@ export default function RootLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={manrope.className}>
+
+        <div style={{ width: "100%", background: "#ffffff", padding: "0.75rem 1rem" }}>
+          <div
+            style={{
+              maxWidth: "1200px",
+              margin: "0 auto",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Image
+              src="/img/logos/logotypy-fundusze-mazowsze.jpg"
+              alt="Fundusze Europejskie dla Mazowsza, Rzeczpospolita Polska, Dofinansowane przez Unię Europejską, Mazowsze serce Polski"
+              width={2560}
+              height={220}
+              style={{ width: "100%", height: "auto", maxWidth: "900px" }}
+              priority
+            />
+          </div>
+        </div>
 
         <NavbarOne
         //  button={<PopupForm />} 
