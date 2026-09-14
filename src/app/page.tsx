@@ -9,7 +9,11 @@ export default async function Home() {
   return (
     <main >
       <div>
-        <Hero4 title={content.heroTitle} imageUrl={content.heroImageUrl} />
+        <Hero4
+          title={content.heroTitle}
+          subtitle={content.heroSubtitle}
+          imageUrl={content.heroImageUrl}
+        />
         <About6 content={content.aboutContent} />
       </div>
     </main>
