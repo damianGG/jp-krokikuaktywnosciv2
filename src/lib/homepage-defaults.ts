@@ -1,4 +1,5 @@
-export const DEFAULT_HERO_TITLE = '„Restart Pracy – Start Rozwoju!”';
+export const DEFAULT_HERO_TITLE = '„Kroki ku Aktywności: Bierna Kobieta, Aktywna Zmiana!”';
+export const DEFAULT_HERO_SUBTITLE = 'Okres realizacji: 01.06.2026-31.05.2027';
 export const DEFAULT_HERO_IMAGE = '/img/hero/hero-strona-glowna.jpg';
 export const DEFAULT_ABOUT_CONTENT = `Celem głównym projektu jest zwiększenie możliwości zawodowych 100 osób powyżej 18 roku życia zamieszkujących w rozumieniu Kodeksu Cywilnego na obszarze województwa świętokrzyskiego, wpisujących się w definicję osób ubogich pracujących poprzez zaplanowane działania realizowane w ramach aktywizacji zawodowej oraz zwiększenie świadomości i kompetencji 15 pracodawców/związków zawodowych posiadających jednostkę organizacyjną na obszarze województwa świętokrzyskiego na temat sposobów zapobiegania dyskryminacji i tworzenia przyjaznego środowiska pracy, co przyczyni się m.in. do poprawy pozycji Uczestników/czek projektu na rynku pracy.
 

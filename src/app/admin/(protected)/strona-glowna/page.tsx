@@ -36,6 +36,16 @@ export default async function AdminStronaGlownaPage() {
           </div>
 
           <div className={styles.field}>
+            <label htmlFor="heroSubtitle">Okres realizacji</label>
+            <input
+              id="heroSubtitle"
+              name="heroSubtitle"
+              type="text"
+              defaultValue={content.heroSubtitle}
+            />
+          </div>
+
+          <div className={styles.field}>
             <label htmlFor="heroImage">Zdjęcie w tle</label>
             <input id="heroImage" name="heroImage" type="file" accept="image/*" />
             <span className={styles.helpText}>

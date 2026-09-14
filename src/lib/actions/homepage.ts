@@ -8,6 +8,7 @@ import { homepageContent } from '@/lib/db/schema';
 import { getUserId } from '@/lib/get-user-id';
 import {
   DEFAULT_HERO_TITLE,
+  DEFAULT_HERO_SUBTITLE,
   DEFAULT_HERO_IMAGE,
   DEFAULT_ABOUT_CONTENT,
 } from '@/lib/homepage-defaults';
@@ -17,6 +18,7 @@ export async function getHomepageContent() {
 
   return {
     heroTitle: content?.heroTitle || DEFAULT_HERO_TITLE,
+    heroSubtitle: content?.heroSubtitle || DEFAULT_HERO_SUBTITLE,
     heroImageUrl: content?.heroImageUrl || DEFAULT_HERO_IMAGE,
     aboutContent: content?.aboutContent || DEFAULT_ABOUT_CONTENT,
   };
@@ -26,6 +28,7 @@ export async function updateHomepageContent(formData: FormData) {
   const userId = await getUserId();
 
   const heroTitle = String(formData.get('heroTitle') ?? '').trim();
+  const heroSubtitle = String(formData.get('heroSubtitle') ?? '').trim();
   const aboutContent = String(formData.get('aboutContent') ?? '').trim();
   const heroImageFile = formData.get('heroImage') as File | null;
 
@@ -46,10 +49,12 @@ export async function updateHomepageContent(formData: FormData) {
   if (existing) {
     await db
       .update(homepageContent)
-      .set({ heroTitle, aboutContent, heroImageUrl, userId, updatedAt: new Date() })
+      .set({ heroTitle, heroSubtitle, aboutContent, heroImageUrl, userId, updatedAt: new Date() })
       .where(eq(homepageContent.id, existing.id));
   } else {
-    await db.insert(homepageContent).values({ userId, heroTitle, aboutContent, heroImageUrl });
+    await db
+      .insert(homepageContent)
+      .values({ userId, heroTitle, heroSubtitle, aboutContent, heroImageUrl });
   }
 
   revalidatePath('/');

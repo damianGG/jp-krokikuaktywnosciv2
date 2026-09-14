@@ -10,10 +10,12 @@ import PopupForm from "../form/popupform";
 
 
 export default function Hero4({
-  title = '\u201eRestart Pracy \u2013 Start Rozwoju!\u201d',
+  title = '\u201eKroki ku Aktywno\u015bci: Bierna Kobieta, Aktywna Zmiana!\u201d',
+  subtitle = 'Okres realizacji: 01.06.2026-31.05.2027',
   imageUrl = 'https://github.com/user-attachments/assets/3cea04b8-34bd-4e1b-b103-02fa562f0d7c',
 }: {
   title?: string;
+  subtitle?: string;
   imageUrl?: string;
 }) {
 
@@ -44,9 +46,14 @@ export default function Hero4({
 
 
           <div className="col-lg-5 mt-lg-n10 text-center text-lg-start">
-            <h1 className="display-1 mb-5 fs-40" style={slideInDownAnimate("600ms")}>
-              &bdquo;Restart Pracy &ndash; Start Rozwoju!&rdquo;
+            <h1 className="display-1 mb-3 fs-40" style={slideInDownAnimate("600ms")}>
+              {title}
             </h1>
+            {subtitle && (
+              <p className="lead mb-5" style={slideInDownAnimate("900ms")}>
+                {subtitle}
+              </p>
+            )}
             <div className="d-flex justify-content-center justify-content-lg-start">
 
               <span style={slideInDownAnimate("1200ms")}>
