@@ -2,6 +2,9 @@
 const nextConfig = {
     experimental: {
         serverComponentsExternalPackages: ['@vercel/blob', 'undici', 'sanitize-html'],
+        serverActions: {
+            bodySizeLimit: '10mb',
+        },
     },
     images: {
         remotePatterns: [
