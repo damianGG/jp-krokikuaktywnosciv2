@@ -11,7 +11,7 @@ import Link from "next/link";
 // LOCAL CUSTOM COMPONENTS
 import HeaderRight from "../components/header-right";
 import FancyHeader from "../components/fancy-header";
-import crselogo from "../../../../assets/img/crselogo.png";
+import jpLogo from "../../../../../public/img/logos/jp-logo.png";
 
 // ===================================================================
 interface NavbarProps {
@@ -58,14 +58,14 @@ export default function NavbarOne({
       <div className="navbar-brand w-100">
         <Link href="/" >
           <Image
-            src={crselogo}
+            src={jpLogo}
 
-            alt="logo firmy JP"
+            alt="J&P Moritz Consulting Group"
 
             style={{
               width: '100%',
               height: 'auto',
-              maxWidth: '65px',
+              maxWidth: '110px',
             }}
           />
         </Link>
@@ -73,7 +73,7 @@ export default function NavbarOne({
 
       <div id="offcanvas-nav" data-bs-scroll="true" className="navbar-collapse offcanvas offcanvas-nav offcanvas-start">
         <div className="offcanvas-header d-lg-none">
-          <h3 className="text-white fs-30 mb-0">CRSE</h3>
+          <h3 className="text-white fs-30 mb-0">J&amp;P</h3>
           <button type="button" aria-label="Close" data-bs-dismiss="offcanvas" className="btn-close btn-close-white" />
         </div>
 

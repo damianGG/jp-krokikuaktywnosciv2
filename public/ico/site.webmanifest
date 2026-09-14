@@ -1,14 +1,14 @@
 {
-    "name": "",
-    "short_name": "",
+    "name": "Kroki ku Aktywności - J&P Moritz Consulting Group",
+    "short_name": "Kroki ku Aktywności",
     "icons": [
         {
-            "src": "/android-chrome-192x192.png",
+            "src": "/ico/android-chrome-192x192.png",
             "sizes": "192x192",
             "type": "image/png"
         },
         {
-            "src": "/android-chrome-512x512.png",
+            "src": "/ico/android-chrome-512x512.png",
             "sizes": "512x512",
             "type": "image/png"
         }

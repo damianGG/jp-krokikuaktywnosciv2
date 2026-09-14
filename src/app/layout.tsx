@@ -15,8 +15,17 @@ import PopupForm from "@/components/blocks/form/popupform";
 const manrope = Manrope({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Restart Pracy - Podkarpackie Centrum Wsparcia OPT",
-  description: "Restart Pracy - Podkarpackie Centrum Wsparcia OPT",
+  title: "Kroki ku Aktywności: Bierna Kobieta, Aktywna Zmiana!",
+  description:
+    "Kroki ku Aktywności: Bierna Kobieta, Aktywna Zmiana! - projekt aktywizacji zawodowej kobiet z Radomia oraz gmin Wieniawa i Chlewiska.",
+  icons: {
+    icon: [
+      { url: "/ico/favicon.ico" },
+      { url: "/ico/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/ico/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/ico/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
@@ -29,12 +38,12 @@ export default function RootLayout({
 
     <html lang="pl" data-bs-theme="light">
       <head>
+        <link rel="icon" href="/ico/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" sizes="180x180" href="/ico/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/ico/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/ico/favicon-16x16.png" />
         <link rel="manifest" href="/ico/site.webmanifest" />
-        <link rel="mask-icon" href="/ico/safari-pinned-tab.svg" color="#5bbad5" />
-        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="msapplication-TileColor" content="#0a1a5c" />
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className={manrope.className}>

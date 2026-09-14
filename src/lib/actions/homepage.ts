@@ -14,6 +14,7 @@ import {
 
 export async function getHomepageContent() {
   const [content] = await db.select().from(homepageContent).limit(1);
+  console.log('[v0] getHomepageContent row:', content);
 
   return {
     heroTitle: content?.heroTitle || DEFAULT_HERO_TITLE,

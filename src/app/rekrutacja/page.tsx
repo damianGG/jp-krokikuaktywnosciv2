@@ -3,8 +3,9 @@ import DownloadElement from '@/components/reuseable/process-list/DownloadElement
 import { getRekrutacjaContent, getRekrutacjaPliki } from '@/lib/actions/rekrutacja';
 
 export const metadata: Metadata = {
-  title: 'Rekrutacja - Restart Pracy',
-  description: 'Informacje o rekrutacji do projektu Restart Pracy oraz pliki do pobrania.',
+  title: 'Rekrutacja - Kroki ku Aktywności',
+  description:
+    'Informacje o rekrutacji do projektu „Kroki ku Aktywności: Bierna Kobieta, Aktywna Zmiana!” oraz dokumenty do pobrania.',
 };
 
 export const dynamic = 'force-dynamic';
