@@ -8,7 +8,7 @@ export default function Toplogo() {
         alt="logo"
         sizes="90vw"
         width={1200}
-        height={100}
+        height={130}
         style={{
           width: '100%',
           height: 'auto',
