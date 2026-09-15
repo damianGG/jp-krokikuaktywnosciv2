@@ -40,7 +40,7 @@ export async function updateHomepageContent(formData: FormData) {
       await del(existing.heroImageUrl).catch(() => {});
     }
     const blob = await put(`strona-glowna/${heroImageFile.name}`, heroImageFile, {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: true,
     });
     heroImageUrl = blob.url;

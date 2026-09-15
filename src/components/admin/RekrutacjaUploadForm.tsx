@@ -43,34 +43,26 @@ export default function RekrutacjaUploadForm() {
       ]);
 
     try {
-      console.log('[v0] rekrutacja upload: start', {
-        colorFile: colorFile.name,
-        size: colorFile.size,
-      });
-
       const colorBlob = await withTimeout(
         upload(`rekrutacja/kolor/${colorFile.name}`, colorFile, {
-          access: 'public',
+          access: 'private',
           handleUploadUrl: '/api/rekrutacja/upload',
         }),
         'wgrywanie pliku kolorowego',
       );
-      console.log('[v0] rekrutacja upload: color blob done', colorBlob.url);
 
       let blackWhite: { url: string; pathname: string } | null = null;
       if (blackWhiteFile && blackWhiteFile.size > 0) {
         const bwBlob = await withTimeout(
           upload(`rekrutacja/czarno-biale/${blackWhiteFile.name}`, blackWhiteFile, {
-            access: 'public',
+            access: 'private',
             handleUploadUrl: '/api/rekrutacja/upload',
           }),
           'wgrywanie pliku czarno-białego',
         );
-        console.log('[v0] rekrutacja upload: bw blob done', bwBlob.url);
         blackWhite = { url: bwBlob.url, pathname: bwBlob.pathname };
       }
 
-      console.log('[v0] rekrutacja upload: saving to db');
       await withTimeout(
         saveRekrutacjaFile({
           description,
@@ -82,12 +74,10 @@ export default function RekrutacjaUploadForm() {
         }),
         'zapis do bazy danych',
       );
-      console.log('[v0] rekrutacja upload: saved, refreshing');
 
       form.reset();
       router.refresh();
     } catch (err) {
-      console.error('[v0] rekrutacja upload: failed', err);
       setError(
         err instanceof Error ? err.message : 'Nie udało się wgrać pliku. Spróbuj ponownie.',
       );

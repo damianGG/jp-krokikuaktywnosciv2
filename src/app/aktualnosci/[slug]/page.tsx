@@ -4,6 +4,7 @@ import { pl } from 'date-fns/locale';
 import DownloadElement from '@/components/reuseable/process-list/DownloadElement';
 import ArticleContent from './ArticleContent';
 import { getAktualnoscBySlug } from '@/lib/actions/aktualnosci';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 import '../style.css';
 
 export const dynamic = 'force-dynamic';
@@ -55,7 +56,10 @@ export default async function BlogDetailsTemplate({
                         <DownloadElement
                           key={file.id}
                           title={file.name}
-                          link1={file.url}
+                          link1={
+                            blobProxyUrl(file.url, { download: true, filename: file.name }) ??
+                            file.url
+                          }
                         />
                       ))}
                     </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import DownloadElement from '@/components/reuseable/process-list/DownloadElement';
 import { getRekrutacjaContent, getRekrutacjaPliki } from '@/lib/actions/rekrutacja';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 
 export const metadata: Metadata = {
   title: 'Rekrutacja - Restart Pracy',
@@ -246,8 +247,16 @@ export default async function Rekrutacja() {
                           <DownloadElement
                             key={file.id}
                             title={file.description || file.name}
-                            link1={file.url}
-                            link2={file.blackWhiteUrl}
+                            link1={
+                              blobProxyUrl(file.url, {
+                                download: true,
+                                filename: file.name,
+                              }) ?? file.url
+                            }
+                            link2={blobProxyUrl(file.blackWhiteUrl, {
+                              download: true,
+                              filename: file.name,
+                            })}
                             link1Label={`Pobierz wersję kolorową: ${file.description || file.name}`}
                             link2Label={`Pobierz wersję czarno-białą: ${file.description || file.name}`}
                             className="mb-5"

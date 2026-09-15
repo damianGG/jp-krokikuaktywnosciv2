@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { format } from 'date-fns';
 import { pl } from 'date-fns/locale';
 import { getPublishedAktualnosci } from '@/lib/actions/aktualnosci';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 import './style.css';
 
 export const metadata: Metadata = {
@@ -61,7 +62,7 @@ export default async function News() {
                   <div className="card news-card">
                     {article.coverImageUrl && (
                       <img
-                        src={article.coverImageUrl}
+                        src={blobProxyUrl(article.coverImageUrl) ?? article.coverImageUrl}
                         alt={article.title}
                         className="card-img-top"
                         style={{ objectFit: 'cover', height: 200, width: '100%' }}
