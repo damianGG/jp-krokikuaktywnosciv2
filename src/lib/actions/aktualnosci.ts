@@ -133,22 +133,13 @@ export async function createAktualnosc(formData: FormData) {
   const content = String(formData.get('content') ?? '').trim();
   const published = formData.get('published') === 'on';
   const publicationDate = parsePublicationDate(formData.get('publicationDate'));
-  const coverFile = formData.get('coverImage') as File | null;
+  const coverImageUrl = String(formData.get('coverImageUrl') ?? '').trim() || null;
 
   if (!title || !content) {
     throw new Error('Tytuł i treść są wymagane.');
   }
 
   const slug = await ensureUniqueSlug(slugify(title));
-
-  let coverImageUrl: string | null = null;
-  if (coverFile && coverFile.size > 0) {
-    const blob = await put(`aktualnosci/${slug}-${coverFile.name}`, coverFile, {
-      access: 'private',
-      addRandomSuffix: true,
-    });
-    coverImageUrl = blob.url;
-  }
 
   const [created] = await db
     .insert(aktualnosci)
@@ -177,7 +168,7 @@ export async function updateAktualnosc(id: number, formData: FormData) {
   const content = String(formData.get('content') ?? '').trim();
   const published = formData.get('published') === 'on';
   const publicationDate = parsePublicationDate(formData.get('publicationDate'));
-  const coverFile = formData.get('coverImage') as File | null;
+  const uploadedCoverImageUrl = String(formData.get('coverImageUrl') ?? '').trim();
 
   if (!title || !content) {
     throw new Error('Tytuł i treść są wymagane.');
@@ -199,15 +190,11 @@ export async function updateAktualnosc(id: number, formData: FormData) {
   }
 
   let coverImageUrl = current.coverImageUrl;
-  if (coverFile && coverFile.size > 0) {
+  if (uploadedCoverImageUrl) {
     if (current.coverImageUrl) {
       await del(current.coverImageUrl).catch(() => {});
     }
-    const blob = await put(`aktualnosci/${slug}-${coverFile.name}`, coverFile, {
-      access: 'private',
-      addRandomSuffix: true,
-    });
-    coverImageUrl = blob.url;
+    coverImageUrl = uploadedCoverImageUrl;
   }
 
   await db
