@@ -8,6 +8,7 @@ import {
 import SubmitButton from '@/components/admin/SubmitButton';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import styles from '@/components/admin/admin.module.scss';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 
 export const metadata = {
   title: 'Panel administracyjny - edycja bloku',
@@ -66,7 +67,7 @@ export default async function EditOProjekcieBlokPage({
             {blok.imageUrl && (
               <div className={styles.imagePreview}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={blok.imageUrl} alt={blok.title} />
+                <img src={blobProxyUrl(blok.imageUrl) ?? blok.imageUrl} alt={blok.title} />
                 <span className={styles.helpText}>Wgraj nowy plik, aby je zastąpić.</span>
               </div>
             )}

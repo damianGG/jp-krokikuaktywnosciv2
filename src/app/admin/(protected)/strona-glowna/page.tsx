@@ -1,6 +1,7 @@
 import { getHomepageContent, updateHomepageContent } from '@/lib/actions/homepage';
 import SubmitButton from '@/components/admin/SubmitButton';
 import styles from '@/components/admin/admin.module.scss';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 
 export const metadata = {
   title: 'Panel administracyjny - strona główna',
@@ -10,6 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function AdminStronaGlownaPage() {
   const content = await getHomepageContent();
+  const heroImageUrl = blobProxyUrl(content.heroImageUrl) ?? content.heroImageUrl;
 
   return (
     <>
@@ -53,7 +55,7 @@ export default async function AdminStronaGlownaPage() {
             </span>
             <div className={styles.imagePreview}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={content.heroImageUrl} alt="Aktualne zdjęcie hero" />
+              <img src={heroImageUrl} alt="Aktualne zdjęcie hero" />
             </div>
           </div>
         </div>

@@ -144,7 +144,7 @@ export async function createAktualnosc(formData: FormData) {
   let coverImageUrl: string | null = null;
   if (coverFile && coverFile.size > 0) {
     const blob = await put(`aktualnosci/${slug}-${coverFile.name}`, coverFile, {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: true,
     });
     coverImageUrl = blob.url;
@@ -204,7 +204,7 @@ export async function updateAktualnosc(id: number, formData: FormData) {
       await del(current.coverImageUrl).catch(() => {});
     }
     const blob = await put(`aktualnosci/${slug}-${coverFile.name}`, coverFile, {
-      access: 'public',
+      access: 'private',
       addRandomSuffix: true,
     });
     coverImageUrl = blob.url;
@@ -266,7 +266,7 @@ export async function addAktualnoscFile(aktualnoscId: number, formData: FormData
   }
 
   const blob = await put(`aktualnosci/pliki/${aktualnoscId}-${file.name}`, file, {
-    access: 'public',
+    access: 'private',
     addRandomSuffix: true,
   });
 

@@ -1,4 +1,5 @@
 import { getOProjekcieBloki, getOProjekcieContent } from '@/lib/actions/o-projekcie';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 import ProjectRichContent from './ProjectRichContent';
 import './style.css';
 
@@ -91,6 +92,7 @@ export default async function OProjekcie() {
                 )}
                 {bloki.map((blok, index) => {
                     const imageRight = index % 2 === 0;
+                    const imageUrl = blobProxyUrl(blok.imageUrl) ?? blok.imageUrl;
 
                     return (
                         <div
@@ -102,7 +104,7 @@ export default async function OProjekcie() {
                                     imageRight ? ' order-lg-1' : ''
                                 }`}
                             >
-                                {isSupportedImageUrl(blok.imageUrl) && (
+                                {isSupportedImageUrl(imageUrl) && (
                                     <>
                                         <div
                                             className="shape bg-dot primary rellax w-17 h-19"
@@ -115,7 +117,7 @@ export default async function OProjekcie() {
                                         <figure className="rounded shadow">
                                             {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img
-                                                src={blok.imageUrl!}
+                                                src={imageUrl!}
                                                 width={600}
                                                 height={1000}
                                                 alt={blok.title}

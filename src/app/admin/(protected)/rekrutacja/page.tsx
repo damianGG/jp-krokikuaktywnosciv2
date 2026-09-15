@@ -7,6 +7,7 @@ import {
 import SubmitButton from '@/components/admin/SubmitButton';
 import RekrutacjaUploadForm from '@/components/admin/RekrutacjaUploadForm';
 import styles from '@/components/admin/admin.module.scss';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 
 export const metadata = {
   title: 'Panel administracyjny - rekrutacja',
@@ -210,7 +211,10 @@ export default async function AdminRekrutacjaPage() {
                   </div>
                   <div className={styles.listItemActions}>
                     <a
-                      href={file.url}
+                      href={
+                        blobProxyUrl(file.url, { download: true, filename: file.name }) ??
+                        file.url
+                      }
                       target="_blank"
                       rel="noreferrer"
                       className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`}
@@ -219,7 +223,12 @@ export default async function AdminRekrutacjaPage() {
                     </a>
                     {file.blackWhiteUrl && (
                       <a
-                        href={file.blackWhiteUrl}
+                        href={
+                          blobProxyUrl(file.blackWhiteUrl, {
+                            download: true,
+                            filename: file.name,
+                          }) ?? file.blackWhiteUrl
+                        }
                         target="_blank"
                         rel="noreferrer"
                         className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`}

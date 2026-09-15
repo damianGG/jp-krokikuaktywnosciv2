@@ -11,6 +11,7 @@ import {
 import SubmitButton from '@/components/admin/SubmitButton';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import styles from '@/components/admin/admin.module.scss';
+import { blobProxyUrl } from '@/lib/blob-proxy';
 
 export const metadata = {
   title: 'Panel administracyjny - edycja aktualności',
@@ -86,7 +87,10 @@ export default async function EditAktualnoscPage({
             <label htmlFor="coverImage">Zdjęcie główne</label>
             {article.coverImageUrl && (
               <div className={styles.imagePreview}>
-                <img src={article.coverImageUrl} alt={article.title} />
+                <img
+                  src={blobProxyUrl(article.coverImageUrl) ?? article.coverImageUrl}
+                  alt={article.title}
+                />
                 <span className={styles.helpText}>Wgraj nowy plik, aby je zastąpić.</span>
               </div>
             )}
@@ -127,7 +131,7 @@ export default async function EditAktualnoscPage({
                   </div>
                   <div className={styles.listItemActions}>
                     <a
-                      href={file.url}
+                      href={blobProxyUrl(file.url, { download: true, filename: file.name }) ?? file.url}
                       target="_blank"
                       rel="noreferrer"
                       className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`}

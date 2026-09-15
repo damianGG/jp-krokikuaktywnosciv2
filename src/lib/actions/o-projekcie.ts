@@ -18,7 +18,7 @@ async function uploadImage(file: File | null) {
   if (!file || file.size === 0) return null;
 
   const blob = await put(`o-projekcie/${file.name}`, file, {
-    access: 'public',
+    access: 'private',
     addRandomSuffix: true,
   });
 
