@@ -10,6 +10,7 @@ import {
 } from '@/lib/actions/aktualnosci';
 import SubmitButton from '@/components/admin/SubmitButton';
 import RichTextEditor from '@/components/admin/RichTextEditor';
+import AktualnoscCoverImageInput from '@/components/admin/AktualnoscCoverImageInput';
 import styles from '@/components/admin/admin.module.scss';
 import { blobProxyUrl } from '@/lib/blob-proxy';
 
@@ -94,7 +95,7 @@ export default async function EditAktualnoscPage({
                 <span className={styles.helpText}>Wgraj nowy plik, aby je zastąpić.</span>
               </div>
             )}
-            <input id="coverImage" name="coverImage" type="file" accept="image/*" />
+            <AktualnoscCoverImageInput slug={article.slug} />
           </div>
 
           <div className={styles.checkboxRow}>

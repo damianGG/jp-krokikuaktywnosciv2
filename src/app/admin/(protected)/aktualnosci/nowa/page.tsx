@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { createAktualnosc } from '@/lib/actions/aktualnosci';
 import SubmitButton from '@/components/admin/SubmitButton';
 import RichTextEditor from '@/components/admin/RichTextEditor';
+import AktualnoscCoverImageInput from '@/components/admin/AktualnoscCoverImageInput';
 import styles from '@/components/admin/admin.module.scss';
 
 export const metadata = {
@@ -56,7 +57,7 @@ export default function NewAktualnoscPage() {
 
           <div className={styles.field}>
             <label htmlFor="coverImage">Zdjęcie główne</label>
-            <input id="coverImage" name="coverImage" type="file" accept="image/*" />
+            <AktualnoscCoverImageInput />
           </div>
 
           <div className={styles.checkboxRow}>
