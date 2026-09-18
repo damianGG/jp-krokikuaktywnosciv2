@@ -40,7 +40,7 @@ export default function ContactForm() {
         const mailText = `Imię: ${values.name}\nEmail: ${values.email}\nNumer telefonu: ${values.phone}`;
         const response = await sendMail({
             email: values.email,
-            subject: 'Formularz ze strony „Restart Pracy - Podkarpackie Centrum Wsparcia OPT”',
+            subject: 'Formularz ze strony „Kroki ku Aktywności - Podkarpackie Centrum Wsparcia OPT”',
             text: mailText,
         });
         if (response?.messageId) {
