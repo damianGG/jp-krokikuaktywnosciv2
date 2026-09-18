@@ -1,10 +1,9 @@
 import type { Metadata } from 'next'
-import Image from 'next/image';
 import Link from 'next/link';
 import { getContactContent } from '@/lib/actions/contact';
 export const metadata: Metadata = {
-    title: 'Kontakt - Restart Pracy',
-    description: 'Dane kontaktowe biura projektu Restart Pracy',
+    title: 'Kontakt - Kroki ku Aktywności',
+    description: 'Dane kontaktowe biura projektu Kroki ku Aktywności',
 }
 export default async function Kontakt() {
     const content = await getContactContent();
@@ -59,7 +58,6 @@ export default async function Kontakt() {
                 </div>
                 <div className="row mt-10">
                     <div className="col text-center">
-                        <Image src="/img/logos/crselogo.png" alt={content.organizationName} width={65} height={65} />
                         <h2>{content.organizationTitle}</h2>
                         {content.organizationAddress && <p><strong>Adres: </strong><span style={{ whiteSpace: 'pre-line' }}>{content.organizationAddress}</span></p>}
                         {content.organizationWebsiteUrl && content.organizationWebsiteLabel && (

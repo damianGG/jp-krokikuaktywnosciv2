@@ -4,8 +4,8 @@ import { getRekrutacjaContent, getRekrutacjaPliki } from '@/lib/actions/rekrutac
 import { blobProxyUrl } from '@/lib/blob-proxy';
 
 export const metadata: Metadata = {
-  title: 'Rekrutacja - Restart Pracy',
-  description: 'Informacje o rekrutacji do projektu Restart Pracy oraz pliki do pobrania.',
+  title: 'Rekrutacja - Kroki ku Aktywności',
+  description: 'Informacje o rekrutacji do projektu Kroki ku Aktywności oraz pliki do pobrania.',
 };
 
 export const dynamic = 'force-dynamic';
