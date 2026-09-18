@@ -19,7 +19,7 @@ export default async function AdminHomePage() {
       <div className={styles.pageHeader}>
         <h1 className={styles.pageTitle}>Przegląd</h1>
         <p className={styles.pageSubtitle}>
-          Zarządzaj treścią strony Restart Pracy.
+          Zarządzaj treścią strony Kroki ku Aktywności.
         </p>
       </div>
 

@@ -20,7 +20,7 @@ export default async function ProtectedAdminLayout({
     <div className={styles.shell}>
       <div className={styles.topbar}>
         <div className={styles.topbarBrand}>
-          Restart Pracy
+          Kroki ku Aktywności
           <span className={styles.topbarBadge}>Panel administracyjny</span>
         </div>
         <div className={styles.topbarActions}>
