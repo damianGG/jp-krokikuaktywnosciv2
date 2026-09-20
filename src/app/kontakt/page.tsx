@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Image from 'next/image';
 import Link from 'next/link';
 import { getContactContent } from '@/lib/actions/contact';
 export const metadata: Metadata = {
@@ -49,6 +50,13 @@ export default async function Kontakt() {
             <div className="container pt-5 pb-15">
                 <div className="row">
                     <div className="col text-center">
+                        <Image
+                            src="/img/logos/crselogo.png"
+                            alt="Centrum Rozwiązań Systemowych i Edukacyjnych"
+                            width={180}
+                            height={180}
+                            className="mb-5"
+                        />
                         <h2>{content.officeTitle}</h2>
                         {content.officeAddress && <p><strong>Adres:</strong> <span style={{ whiteSpace: 'pre-line' }}>{content.officeAddress}</span></p>}
                         {content.officeHours && <p>{content.officeHours}</p>}
