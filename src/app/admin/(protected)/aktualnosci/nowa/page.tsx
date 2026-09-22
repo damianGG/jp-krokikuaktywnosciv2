@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { createAktualnosc } from '@/lib/actions/aktualnosci';
-import SubmitButton from '@/components/admin/SubmitButton';
+import AktualnoscForm from '@/components/admin/AktualnoscForm';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import AktualnoscCoverImageInput from '@/components/admin/AktualnoscCoverImageInput';
 import styles from '@/components/admin/admin.module.scss';
@@ -20,12 +20,11 @@ export default function NewAktualnoscPage() {
       <div className={styles.pageHeader}>
         <h1 className={styles.pageTitle}>Nowa aktualność</h1>
         <p className={styles.pageSubtitle}>
-          Wypełnij treść wpisu. Pliki do pobrania dodasz po zapisaniu wpisu.
+          Wypełnij treść wpisu i wybierz pliki do pobrania. Wszystko zapiszesz razem.
         </p>
       </div>
 
-      <form action={createAktualnosc} className={styles.card}>
-        <div className={styles.formGrid}>
+      <AktualnoscForm action={createAktualnosc} submitLabel="Zapisz aktualność">
           <div className={styles.field}>
             <label htmlFor="title">Tytuł</label>
             <input id="title" name="title" type="text" required />
@@ -65,11 +64,7 @@ export default function NewAktualnoscPage() {
             <label htmlFor="published">Opublikuj od razu</label>
           </div>
 
-          <div>
-            <SubmitButton pendingText="Zapisywanie...">Zapisz aktualność</SubmitButton>
-          </div>
-        </div>
-      </form>
+      </AktualnoscForm>
     </>
   );
 }

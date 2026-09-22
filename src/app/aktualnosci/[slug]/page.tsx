@@ -51,18 +51,19 @@ export default async function BlogDetailsTemplate({
               <div className="blog single mt-n17">
                 <div className="card">
                   {article.files.length > 0 && (
-                    <div className="d-flex flex-column align-items-center mt-10 gap-3">
+                    <section aria-label="Załączniki do pobrania" className="d-flex flex-column align-items-center mt-10 gap-3">
                       {article.files.map((file) => (
                         <DownloadElement
                           key={file.id}
                           title={file.name}
+                          link1Label={`Pobierz załącznik: ${file.name}`}
                           link1={
                             blobProxyUrl(file.url, { download: true, filename: file.name }) ??
                             file.url
                           }
                         />
                       ))}
-                    </div>
+                    </section>
                   )}
                   <div className="card-body">
                     <div className="classic-view">

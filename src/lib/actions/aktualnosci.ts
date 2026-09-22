@@ -2,12 +2,19 @@
 
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { eq, desc, sql } from 'drizzle-orm';
+import { and, eq, desc, sql } from 'drizzle-orm';
 import { put, del } from '@vercel/blob';
 import { db } from '@/lib/db';
 import { aktualnosci, aktualnosciPliki } from '@/lib/db/schema';
 import { getUserId } from '@/lib/get-user-id';
 import { slugify } from '@/lib/slugify';
+import {
+  attachmentMimeType,
+  MAX_NEWS_TEXT_SIZE,
+  NewsFormState,
+  NewsValidationError,
+  validateAttachmentSelection,
+} from '@/lib/aktualnosci-attachments';
 
 export async function getAllAktualnosciAdmin() {
   return db.select().from(aktualnosci).orderBy(desc(aktualnosci.createdAt));
@@ -107,7 +114,7 @@ function parsePublicationDate(value: FormDataEntryValue | null) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(date);
 
   if (!match) {
-    throw new Error('Data publikacji jest wymagana.');
+    throw new NewsValidationError('Data publikacji jest wymagana.');
   }
 
   const publicationDate = new Date(
@@ -119,15 +126,20 @@ function parsePublicationDate(value: FormDataEntryValue | null) {
     publicationDate.getUTCMonth() !== Number(match[2]) - 1 ||
     publicationDate.getUTCDate() !== Number(match[3])
   ) {
-    throw new Error('Podaj poprawną datę publikacji.');
+    throw new NewsValidationError('Podaj poprawną datę publikacji.');
   }
 
   return publicationDate;
 }
 
-export async function createAktualnosc(formData: FormData) {
-  const userId = await getUserId();
-
+function parsePost(formData: FormData) {
+  const textSize = Array.from(formData.values()).reduce(
+    (sum, value) => sum + (typeof value === 'string' ? Buffer.byteLength(value) : 0),
+    0
+  );
+  if (textSize > MAX_NEWS_TEXT_SIZE) {
+    throw new NewsValidationError('Treść formularza przekracza limit 1 MB.');
+  }
   const title = String(formData.get('title') ?? '').trim();
   const excerpt = String(formData.get('excerpt') ?? '').trim();
   const content = String(formData.get('content') ?? '').trim();
@@ -136,85 +148,136 @@ export async function createAktualnosc(formData: FormData) {
   const coverImageUrl = String(formData.get('coverImageUrl') ?? '').trim() || null;
 
   if (!title || !content) {
-    throw new Error('Tytuł i treść są wymagane.');
+    throw new NewsValidationError('Tytuł i treść są wymagane.');
   }
+  return { title, excerpt: excerpt || null, content, published, createdAt: publicationDate, coverImageUrl };
+}
 
-  const slug = await ensureUniqueSlug(slugify(title));
+async function validateAttachments(formData: FormData, field = 'attachments') {
+  const files: File[] = [];
+  for (const entry of formData.getAll(field)) {
+    if (typeof entry === 'string') throw new NewsValidationError('Nieprawidłowy załącznik.');
+    if (!entry.name && entry.size === 0) continue;
+    files.push(entry);
+  }
+  const error = validateAttachmentSelection(files);
+  if (error) throw new NewsValidationError(error);
 
-  const [created] = await db
-    .insert(aktualnosci)
-    .values({
-      userId,
-      slug,
-      title,
-      excerpt: excerpt || null,
-      content,
-      coverImageUrl,
-      published,
-      createdAt: publicationDate,
-    })
-    .returning({ id: aktualnosci.id });
+  for (const file of files) {
+    const header = Buffer.from(await file.slice(0, 8).arrayBuffer());
+    const mime = attachmentMimeType(file.name);
+    const valid = mime === 'application/pdf'
+      ? header.subarray(0, 5).equals(Buffer.from('%PDF-'))
+      : mime === 'image/png'
+        ? header.equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
+        : header.subarray(0, 3).equals(Buffer.from([255, 216, 255]));
+    if (!valid) {
+      throw new NewsValidationError(`Zawartość pliku „${file.name}” nie odpowiada jego formatowi.`);
+    }
+  }
+  return files;
+}
+
+type UploadedAttachment = { name: string; url: string; pathname: string };
+
+async function uploadAttachments(files: File[], uploaded: UploadedAttachment[]) {
+  for (const file of files) {
+    const extension = file.name.split('.').pop()!.toLowerCase();
+    const blob = await put(`aktualnosci/pliki/${crypto.randomUUID()}.${extension}`, file, {
+      access: 'private',
+      addRandomSuffix: true,
+      contentType: attachmentMimeType(file.name),
+    });
+    uploaded.push({ name: file.name, url: blob.url, pathname: blob.pathname });
+  }
+}
+
+async function cleanupAttachments(uploaded: UploadedAttachment[]) {
+  await Promise.all(uploaded.map((file) => del(file.url).catch(() => {})));
+}
+
+function saveError(error: unknown): NewsFormState {
+  return {
+    error: error instanceof NewsValidationError
+      ? error.message
+      : 'Nie udało się zapisać wpisu i załączników. Spróbuj ponownie.',
+  };
+}
+
+export async function createAktualnosc(formData: FormData): Promise<NewsFormState> {
+  const userId = await getUserId();
+  const uploaded: UploadedAttachment[] = [];
+  let id: number;
+  try {
+    const post = parsePost(formData);
+    const files = await validateAttachments(formData);
+    const slug = await ensureUniqueSlug(slugify(post.title));
+    if (files.length) await ensureAktualnosciPlikiTable();
+    await uploadAttachments(files, uploaded);
+    id = await db.transaction(async (tx) => {
+      const [created] = await tx.insert(aktualnosci).values({ ...post, userId, slug })
+        .returning({ id: aktualnosci.id });
+      if (uploaded.length) {
+        await tx.insert(aktualnosciPliki).values(
+          uploaded.map((file) => ({ ...file, userId, aktualnoscId: created.id }))
+        );
+      }
+      return created.id;
+    });
+  } catch (error) {
+    await cleanupAttachments(uploaded);
+    return saveError(error);
+  }
 
   revalidatePath('/aktualnosci');
   revalidatePath('/admin/aktualnosci');
-  redirect(`/admin/aktualnosci/${created.id}`);
+  redirect(`/admin/aktualnosci/${id}`);
 }
 
-export async function updateAktualnosc(id: number, formData: FormData) {
-  await getUserId();
-
-  const title = String(formData.get('title') ?? '').trim();
-  const excerpt = String(formData.get('excerpt') ?? '').trim();
-  const content = String(formData.get('content') ?? '').trim();
-  const published = formData.get('published') === 'on';
-  const publicationDate = parsePublicationDate(formData.get('publicationDate'));
-  const uploadedCoverImageUrl = String(formData.get('coverImageUrl') ?? '').trim();
-
-  if (!title || !content) {
-    throw new Error('Tytuł i treść są wymagane.');
-  }
-
-  const [current] = await db
-    .select()
-    .from(aktualnosci)
-    .where(eq(aktualnosci.id, id))
-    .limit(1);
-
-  if (!current) {
-    throw new Error('Nie znaleziono wpisu.');
-  }
-
-  let slug = current.slug;
-  if (slugify(title) !== current.slug) {
-    slug = await ensureUniqueSlug(slugify(title), id);
-  }
-
-  let coverImageUrl = current.coverImageUrl;
-  if (uploadedCoverImageUrl) {
-    if (current.coverImageUrl) {
-      await del(current.coverImageUrl).catch(() => {});
+export async function updateAktualnosc(id: number, formData: FormData): Promise<NewsFormState> {
+  const userId = await getUserId();
+  const uploaded: UploadedAttachment[] = [];
+  let slug: string;
+  let oldSlug: string;
+  let oldCoverToDelete: string | null = null;
+  try {
+    const post = parsePost(formData);
+    const files = await validateAttachments(formData);
+    const [current] = await db.select().from(aktualnosci)
+      .where(eq(aktualnosci.id, id)).limit(1);
+    if (!current) throw new NewsValidationError('Nie znaleziono wpisu.');
+    oldSlug = current.slug;
+    slug = await ensureUniqueSlug(slugify(post.title), id);
+    if (files.length) await ensureAktualnosciPlikiTable();
+    await uploadAttachments(files, uploaded);
+    await db.transaction(async (tx) => {
+      const updated = await tx.update(aktualnosci).set({
+        ...post,
+        slug,
+        coverImageUrl: post.coverImageUrl || current.coverImageUrl,
+        updatedAt: new Date(),
+      }).where(eq(aktualnosci.id, id)).returning({ id: aktualnosci.id });
+      if (!updated.length) throw new NewsValidationError('Nie znaleziono wpisu.');
+      if (uploaded.length) {
+        await tx.insert(aktualnosciPliki).values(
+          uploaded.map((file) => ({ ...file, userId, aktualnoscId: id }))
+        );
+      }
+    });
+    if (post.coverImageUrl && post.coverImageUrl !== current.coverImageUrl) {
+      oldCoverToDelete = current.coverImageUrl;
     }
-    coverImageUrl = uploadedCoverImageUrl;
+  } catch (error) {
+    await cleanupAttachments(uploaded);
+    return saveError(error);
   }
-
-  await db
-    .update(aktualnosci)
-    .set({
-      title,
-      slug,
-      excerpt: excerpt || null,
-      content,
-      coverImageUrl,
-      published,
-      createdAt: publicationDate,
-      updatedAt: new Date(),
-    })
-    .where(eq(aktualnosci.id, id));
-
+  if (oldCoverToDelete) await del(oldCoverToDelete).catch(() => {});
   revalidatePath('/aktualnosci');
+  revalidatePath(`/aktualnosci/${oldSlug}`);
   revalidatePath(`/aktualnosci/${slug}`);
   revalidatePath('/admin/aktualnosci');
   revalidatePath(`/admin/aktualnosci/${id}`);
+  return { success: 'Zapisano wpis i załączniki.' };
 }
 
 export async function deleteAktualnosc(id: number) {
@@ -245,26 +308,23 @@ export async function deleteAktualnosc(id: number) {
 
 export async function addAktualnoscFile(aktualnoscId: number, formData: FormData) {
   const userId = await getUserId();
-  await ensureAktualnosciPlikiTable();
-
-  const file = formData.get('file') as File | null;
-  if (!file || file.size === 0) {
-    throw new Error('Wybierz plik do wgrania.');
+  const files = await validateAttachments(formData, 'file');
+  if (!files.length) throw new NewsValidationError('Wybierz plik do wgrania.');
+  const [article] = await db.select({ slug: aktualnosci.slug }).from(aktualnosci)
+    .where(eq(aktualnosci.id, aktualnoscId)).limit(1);
+  if (!article) throw new NewsValidationError('Nie znaleziono wpisu.');
+  const uploaded: UploadedAttachment[] = [];
+  try {
+    await ensureAktualnosciPlikiTable();
+    await uploadAttachments(files, uploaded);
+    await db.insert(aktualnosciPliki).values(
+      uploaded.map((file) => ({ ...file, userId, aktualnoscId }))
+    );
+  } catch (error) {
+    await cleanupAttachments(uploaded);
+    throw error;
   }
-
-  const blob = await put(`aktualnosci/pliki/${aktualnoscId}-${file.name}`, file, {
-    access: 'private',
-    addRandomSuffix: true,
-  });
-
-  await db.insert(aktualnosciPliki).values({
-    userId,
-    aktualnoscId,
-    name: file.name,
-    url: blob.url,
-    pathname: blob.pathname,
-  });
-
+  revalidatePath(`/aktualnosci/${article.slug}`);
   revalidatePath(`/admin/aktualnosci/${aktualnoscId}`);
   revalidatePath('/aktualnosci');
 }
@@ -275,14 +335,17 @@ export async function deleteAktualnoscFile(fileId: number, aktualnoscId: number)
   const [file] = await db
     .select()
     .from(aktualnosciPliki)
-    .where(eq(aktualnosciPliki.id, fileId))
+    .where(and(eq(aktualnosciPliki.id, fileId), eq(aktualnosciPliki.aktualnoscId, aktualnoscId)))
     .limit(1);
 
   if (file) {
-    await del(file.url).catch(() => {});
     await db.delete(aktualnosciPliki).where(eq(aktualnosciPliki.id, fileId));
+    await del(file.url).catch(() => {});
   }
 
+  const [article] = await db.select({ slug: aktualnosci.slug }).from(aktualnosci)
+    .where(eq(aktualnosci.id, aktualnoscId)).limit(1);
+  if (article) revalidatePath(`/aktualnosci/${article.slug}`);
   revalidatePath(`/admin/aktualnosci/${aktualnoscId}`);
   revalidatePath('/aktualnosci');
 }

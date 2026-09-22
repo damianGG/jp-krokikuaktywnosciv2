@@ -9,6 +9,12 @@
   margin-bottom: 1.1rem;
 }
 
+.projectRichContent ul > li::marker {
+  content: '\e9dd\00a0';
+  font-family: 'Unicons';
+  color: var(--bs-primary, #3f78e0);
+}
+
 .projectRichContent li + li {
   margin-top: 0.75rem;
 }

@@ -51,7 +51,7 @@ function EligibilityCards({ value }: { value: string }) {
                 <span className="icon btn btn-circle btn-lg btn-soft-primary pe-none me-4 flex-shrink-0">
                   <span className="number">{index + 1}</span>
                 </span>
-                <p className="mb-0 fw-semibold">{item}</p>
+                <p className="mb-0 fw-bold">{item}</p>
               </div>
             </div>
           </div>
@@ -83,18 +83,7 @@ function ApplicationSteps({ value }: { value: string }) {
 
           {index < steps.length - 1 && (
             <div className="text-center mt-4" aria-hidden="true">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="48"
-                height="48"
-                fill="currentColor"
-                viewBox="0 0 16 16"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1"
-                />
-              </svg>
+              <i className="uil uil-arrow-circle-down fs-40 text-primary d-inline-block lh-1" />
             </div>
           )}
         </div>

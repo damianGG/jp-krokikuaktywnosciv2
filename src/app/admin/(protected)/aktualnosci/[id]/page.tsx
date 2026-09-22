@@ -5,10 +5,10 @@ import {
   getAktualnoscById,
   updateAktualnosc,
   deleteAktualnosc,
-  addAktualnoscFile,
   deleteAktualnoscFile,
 } from '@/lib/actions/aktualnosci';
 import SubmitButton from '@/components/admin/SubmitButton';
+import AktualnoscForm from '@/components/admin/AktualnoscForm';
 import RichTextEditor from '@/components/admin/RichTextEditor';
 import AktualnoscCoverImageInput from '@/components/admin/AktualnoscCoverImageInput';
 import styles from '@/components/admin/admin.module.scss';
@@ -34,7 +34,6 @@ export default async function EditAktualnoscPage({
 
   const updateWithId = updateAktualnosc.bind(null, id);
   const deleteWithId = deleteAktualnosc.bind(null, id);
-  const addFileWithId = addAktualnoscFile.bind(null, id);
 
   return (
     <>
@@ -47,8 +46,7 @@ export default async function EditAktualnoscPage({
         <p className={styles.pageSubtitle}>{article.title}</p>
       </div>
 
-      <form action={updateWithId} className={styles.card}>
-        <div className={styles.formGrid}>
+      <AktualnoscForm action={updateWithId} submitLabel="Zapisz zmiany">
           <div className={styles.field}>
             <label htmlFor="title">Tytuł</label>
             <input id="title" name="title" type="text" defaultValue={article.title} required />
@@ -108,11 +106,7 @@ export default async function EditAktualnoscPage({
             <label htmlFor="published">Opublikowane</label>
           </div>
 
-          <div>
-            <SubmitButton pendingText="Zapisywanie...">Zapisz zmiany</SubmitButton>
-          </div>
-        </div>
-      </form>
+      </AktualnoscForm>
 
       <div className={styles.card}>
         <div className={styles.cardHeader}>
@@ -136,6 +130,7 @@ export default async function EditAktualnoscPage({
                       target="_blank"
                       rel="noreferrer"
                       className={`${styles.btn} ${styles.btnOutline} ${styles.btnSm}`}
+                      aria-label={`Pobierz ${file.name}`}
                     >
                       Pobierz
                     </a>
@@ -151,10 +146,6 @@ export default async function EditAktualnoscPage({
           </div>
         )}
 
-        <form action={addFileWithId} className={styles.formRow} style={{ marginTop: '1.25rem' }}>
-          <input name="file" type="file" required />
-          <SubmitButton pendingText="Wgrywanie...">Dodaj plik</SubmitButton>
-        </form>
       </div>
 
       <div className={styles.card}>
