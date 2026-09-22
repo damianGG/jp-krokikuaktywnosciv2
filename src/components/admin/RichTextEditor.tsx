@@ -18,6 +18,12 @@ export default function RichTextEditor({ name, defaultValue = '' }: Props) {
     extensions: [
       StarterKit.configure({
         heading: { levels: [2, 3] },
+        link: {
+          autolink: false,
+          linkOnPaste: false,
+          openOnClick: false,
+          shouldAutoLink: () => false,
+        },
       }),
     ],
     content: defaultValue,

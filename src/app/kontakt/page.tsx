@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link';
+import Image from 'next/image';
+import crselogo from '@/assets/img/crselogo.png';
 import { getContactContent } from '@/lib/actions/contact';
 export const metadata: Metadata = {
     title: 'Kontakt - Kroki ku Aktywności',
@@ -59,6 +61,12 @@ export default async function Kontakt() {
                 <div className="row mt-10">
                     <div className="col text-center">
                         <h2>{content.organizationTitle}</h2>
+                        <Image
+                            src={crselogo}
+                            alt="Logo firmy JP — beneficjenta projektu"
+                            className="mb-5"
+                            style={{ width: '180px', maxWidth: '100%', height: 'auto' }}
+                        />
                         {content.organizationAddress && <p><strong>Adres: </strong><span style={{ whiteSpace: 'pre-line' }}>{content.organizationAddress}</span></p>}
                         {content.organizationWebsiteUrl && content.organizationWebsiteLabel && (
                             <p><strong>Strona: </strong><Link href={content.organizationWebsiteUrl} className="link-primary" target="_blank" rel="noopener noreferrer">{content.organizationWebsiteLabel}</Link></p>

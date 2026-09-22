@@ -7,7 +7,7 @@ import { blobProxyUrl } from '@/lib/blob-proxy';
 import './style.css';
 
 export const metadata: Metadata = {
-  title: 'Aktualności o projekcie',
+  title: 'Aktualności - Kroki ku Aktywności',
   description: 'Aktualności o projekcie',
 };
 

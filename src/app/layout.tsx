@@ -15,8 +15,8 @@ import PopupForm from "@/components/blocks/form/popupform";
 const manrope = Manrope({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Kroki ku Aktywności - Podkarpackie Centrum Wsparcia OPT",
-  description: "Kroki ku Aktywności - Podkarpackie Centrum Wsparcia OPT",
+  title: "Kroki ku Aktywności",
+  description: "Kroki ku Aktywności",
   icons: {
     icon: [
       { url: "/ico/favicon.ico" },

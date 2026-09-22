@@ -4,7 +4,7 @@ import ProjectRichContent from './ProjectRichContent';
 import './style.css';
 
 export const metadata = {
-    title: 'O projekcie',
+    title: 'O Projekcie - Kroki ku Aktywności',
     description:
         'Cele, wartość i formy wsparcia dostępne w ramach projektu — doradztwo zawodowe, poradnictwo psychologiczne, szkolenia i kursy zawodowe.',
 };
@@ -36,7 +36,6 @@ export default async function OProjekcie() {
         getOProjekcieContent(),
         getOProjekcieBloki(),
     ]);
-    const heroTitle = content?.heroTitle?.trim() || 'O projekcie';
     const projectValue = content?.projectValue?.trim();
     const euContribution = content?.euContribution?.trim();
     const intro = content?.intro?.trim();
@@ -69,7 +68,7 @@ export default async function OProjekcie() {
                     style={{ position: 'relative', zIndex: 1 }}
                 >
                     <h1 className="display-1 mb-3" style={{ color: 'white' }}>
-                        {heroTitle}
+                        O Projekcie
                     </h1>
                 </div>
             </section>
@@ -86,7 +85,7 @@ export default async function OProjekcie() {
                     </p>
                 )}
                 {intro && (
-                    <div className="lead fs-lg">
+                    <div className="lead fs-lg mb-12 mb-md-15">
                         <ProjectRichContent content={intro} />
                     </div>
                 )}
